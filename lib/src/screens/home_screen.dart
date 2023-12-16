@@ -30,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return CircularProgressIndicator(); // Loading indicator while data is being fetched
           }
 
-          if (!snapshot.hasData) {
+          if (!snapshot.hasData) {  
             return const Text('Error fetching data'); // Handle error case
           }
 

@@ -9,6 +9,12 @@ import 'package:meowz/src/screens/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // Log out the current user (if any)
+  await _auth.signOut();
+
   runApp(MainApp());
 }
 

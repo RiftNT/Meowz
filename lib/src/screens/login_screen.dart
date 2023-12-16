@@ -2,14 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:meowz/src/screens/register_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../services/firebase_auth.dart';
 import '../widgets/form_container_widget.dart';
-
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -19,6 +19,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _isSigning = false;
   final FirebaseAuthService _auth = FirebaseAuthService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
@@ -42,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("assets/images/login.png", width:130, height:130),
+              Image.asset("assets/images/login.png", width: 130, height: 130),
               const Text(
                 "Meowz",
                 style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
@@ -78,18 +80,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
-                    child: _isSigning ? const CircularProgressIndicator(
-                      color: Colors.white,) : const Text(
-                      "Log In",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: _isSigning
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : const Text(
+                            "Log In",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                   ),
                 ),
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               GestureDetector(
                 onTap: () {
                   _signInWithGoogle();
@@ -105,8 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(FontAwesomeIcons.google, color: Colors.white,),
-                        SizedBox(width: 5,),
+                        Icon(FontAwesomeIcons.google, color: Colors.white),
+                        SizedBox(width: 5),
                         Text(
                           "Sign in with Google",
                           style: TextStyle(
@@ -119,11 +126,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(
                 height: 20,
               ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -146,7 +151,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-
             ],
           ),
         ),
@@ -155,7 +159,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _signIn() async {
-
     setState(() {
       _isSigning = true;
     });
@@ -173,36 +176,51 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  _signInWithGoogle()async{
+  Future<void> _updateUserDatabase(String uid, String username, String email) async {
+    await _firestore.collection('users').doc(uid).set(
+      {
+        'email': email,
+        'username': username,
+      },
+      SetOptions(merge: true),
+    );
+  }
 
+  _signInWithGoogle() async {
     final GoogleSignIn _googleSignIn = GoogleSignIn();
 
     try {
-
       final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
 
-      if(googleSignInAccount != null ){
-        final GoogleSignInAuthentication googleSignInAuthentication = await
-        googleSignInAccount.authentication;
+      if (googleSignInAccount != null) {
+        final GoogleSignInAuthentication googleSignInAuthentication =
+            await googleSignInAccount.authentication;
 
         final AuthCredential credential = GoogleAuthProvider.credential(
           idToken: googleSignInAuthentication.idToken,
           accessToken: googleSignInAuthentication.accessToken,
         );
 
-        await _firebaseAuth.signInWithCredential(credential);
+        final UserCredential authResult = await _firebaseAuth.signInWithCredential(credential);
+        final User user = authResult.user!;
+
+        // Extract Google username and email
+        final String googleUsername = googleSignInAccount.displayName ?? 'Google User';
+        final String googleEmail = googleSignInAccount.email ?? '';
+
+        // Store Google username and email in the database
+        await _updateUserDatabase(user.uid, googleUsername, googleEmail);
+
         Navigator.pushNamed(context, "/home");
       }
-    } catch(e) {
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            content: Text('An error occurred: $e'),
-          ),
-        );
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text('An error occurred: $e'),
+        ),
+      );
     }
-
-
   }
-  
+
 }
