@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "830761374644",
+    "project_id": "meowz-b9cb1",
+    "storage_bucket": "meowz-b9cb1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:830761374644:android:b0180fce733eee9c1158e1",
+        "android_client_info": {
+          "package_name": "com.example.meowz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBseDcNNOeLzUpGgHpPv-7QNKN5z-xnDwQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
