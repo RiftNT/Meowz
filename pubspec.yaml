@@ -7,10 +7,13 @@ environment:
   sdk: '>=3.2.3 <4.0.0'
 
 dependencies:
+  cloud_firestore: ^4.13.6
   firebase_auth: ^4.15.3
   firebase_core: ^2.24.2
   flutter:
     sdk: flutter
+  font_awesome_flutter: ^10.6.0
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -19,3 +22,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+      - assets/
+      - assets/images/
