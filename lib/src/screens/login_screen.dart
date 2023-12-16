@@ -138,7 +138,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => const RegisterScreen()),
                       );
                     },
                     child: const Text(
@@ -172,11 +173,12 @@ class _LoginScreenState extends State<LoginScreen> {
       _isSigning = false;
     });
     if (user != null) {
-      Navigator.pushNamed(context, "/home");
+      Navigator.pushReplacementNamed(context, "/home");
     }
   }
 
-  Future<void> _updateUserDatabase(String uid, String username, String email) async {
+  Future<void> _updateUserDatabase(
+      String uid, String username, String email) async {
     await _firestore.collection('users').doc(uid).set(
       {
         'email': email,
@@ -190,7 +192,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final GoogleSignIn _googleSignIn = GoogleSignIn();
 
     try {
-      final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
 
       if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication =
@@ -201,11 +204,13 @@ class _LoginScreenState extends State<LoginScreen> {
           accessToken: googleSignInAuthentication.accessToken,
         );
 
-        final UserCredential authResult = await _firebaseAuth.signInWithCredential(credential);
+        final UserCredential authResult =
+            await _firebaseAuth.signInWithCredential(credential);
         final User user = authResult.user!;
 
         // Extract Google username and email
-        final String googleUsername = googleSignInAccount.displayName ?? 'Google User';
+        final String googleUsername =
+            googleSignInAccount.displayName ?? 'Google User';
         final String googleEmail = googleSignInAccount.email ?? '';
 
         // Store Google username and email in the database
@@ -222,5 +227,4 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
-
 }
