@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:meowz/src/models/cats_model.dart';
 import 'package:meowz/src/screens/favorites_screen.dart';
 import 'package:meowz/src/screens/feed_screen.dart';
 import 'package:meowz/src/screens/profile_screen.dart';
@@ -51,9 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
           final username = userData['username'] ?? 'User';
 
           return Scaffold(
-            // appBar: AppBar(
-            //   title: const Text("Home"),
-            // ),
             body: _pages[pageIndex],
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: pageIndex,
@@ -80,69 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           );
-
-          // return Column(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Center(
-          //       child: Text(
-          //         "Hello $username",
-          //         style: const TextStyle(
-          //             fontWeight: FontWeight.bold, fontSize: 19),
-          //       ),
-          //     ),
-          //     const SizedBox(
-          //       height: 30,
-          //     ),
-          //     GestureDetector(
-          //       onTap: () {
-          //         FirebaseAuth.instance.signOut();
-          //         Navigator.pushNamed(context, "/login");
-          //       },
-          //       child: Container(
-          //         height: 45,
-          //         width: 100,
-          //         decoration: BoxDecoration(
-          //           color: Colors.blue,
-          //           borderRadius: BorderRadius.circular(10),
-          //         ),
-          //         child: const Center(
-          //           child: Text(
-          //             "Sign out",
-          //             style: TextStyle(
-          //               color: Colors.white,
-          //               fontWeight: FontWeight.bold,
-          //               fontSize: 18,
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     const SizedBox(height: 20),
-          //     GestureDetector(
-          //         onTap: () {
-          //           Navigator.pushNamed(context, "/feed");
-          //         },
-          //         child: Container(
-          //           height: 45,
-          //           width: 100,
-          //           decoration: BoxDecoration(
-          //             color: Colors.blue,
-          //             borderRadius: BorderRadius.circular(10),
-          //           ),
-          //           child: const Center(
-          //             child: Text(
-          //               "Feed",
-          //               style: TextStyle(
-          //                 color: Colors.white,
-          //                 fontWeight: FontWeight.bold,
-          //                 fontSize: 18,
-          //               ),
-          //             ),
-          //           ),
-          //         ))
-          //   ],
-          // );
         },
       ),
     );

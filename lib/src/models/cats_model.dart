@@ -27,9 +27,8 @@ class Cat {
   }
 
   static Future<Cat> fetchCat() async {
-    final response = await http.get(
-        'https://api.thecatapi.com/v1/images/search?has_breeds=1&api_key=live_ww8GBeUHkAu51IVO2DmnEPwoPj8hOPVoetILTJHlSWIvWYx8H1r1W8ZJvtkLAwZR'
-            as Uri);
+    final response = await http.get(Uri.parse(
+        'https://api.thecatapi.com/v1/images/search?has_breeds=1&api_key=live_ww8GBeUHkAu51IVO2DmnEPwoPj8hOPVoetILTJHlSWIvWYx8H1r1W8ZJvtkLAwZR'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
