@@ -51,9 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
           final username = userData['username'] ?? 'User';
 
           return Scaffold(
-            appBar: AppBar(
-              title: const Text("Home"),
-            ),
+            // appBar: AppBar(
+            //   title: const Text("Home"),
+            // ),
             body: _pages[pageIndex],
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: pageIndex,
