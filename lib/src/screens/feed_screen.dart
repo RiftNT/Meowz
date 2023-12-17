@@ -66,13 +66,5 @@ class _FeedScreenState extends State<FeedScreen> {
         );
       },
     );
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text('FEED'),
-    //   ),
-    //   body: Center(
-    //     child: Column(children: [Text('YES')]),
-    //   ),
-    // );
   }
 }
