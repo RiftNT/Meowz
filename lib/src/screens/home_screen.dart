@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:meowz/src/models/cats_model.dart';
 import 'package:meowz/src/screens/favorites_screen.dart';
 import 'package:meowz/src/screens/feed_screen.dart';
 import 'package:meowz/src/screens/profile_screen.dart';
@@ -41,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
         stream: _userStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator(); // Loading indicator while data is being fetched
+            return const CircularProgressIndicator(); // Loading indicator while data is being fetched
           }
 
           if (!snapshot.hasData) {
@@ -49,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           final userData = snapshot.data!.data() as Map<String, dynamic>;
+          // ignore: unused_local_variable
           final username = userData['username'] ?? 'User';
 
           return Scaffold(
