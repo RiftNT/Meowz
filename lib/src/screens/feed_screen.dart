@@ -31,14 +31,16 @@ class _FeedScreenState extends State<FeedScreen> {
             var extractedData = snapshot.data as Cat;
 
             return Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("Cat ID: ${extractedData.id}"),
-                    Image(image: NetworkImage(extractedData.url))
-                  ],
+              body: ClipRRect(
+                // borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(extractedData.url),
+                      fit: BoxFit.contain,
+                      // alignment: const Alignment(-0.3, 0),
+                    ),
+                  ),
                 ),
               ),
             );
