@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:appinio_swiper/appinio_swiper.dart';
-import 'package:meowz/src/models/cats_model.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+class Cat {
+  final String id;
+  final String url;
+
+  Cat({required this.id, required this.url});
+
+  factory Cat.fromJson(Map<String, dynamic> json) {
+    return Cat(
+      id: json['id'] ?? '',
+      url: json['url'] ?? '',
+    );
+  }
+}
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -33,6 +48,26 @@ class _FeedScreenState extends State<FeedScreen> {
       throw Exception('Failed to load cats: ${response.statusCode}');
     }
   }
+
+  Future<void> addToFavorites(String catId) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    
+    if (user != null) {
+      final userId = user.uid;
+      
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('favorites')
+          .doc(catId)
+          .set({
+            'timestamp': FieldValue.serverTimestamp(),
+          });
+    } else {
+      print("No user is currently signed in.");
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,12 +119,14 @@ class _FeedScreenState extends State<FeedScreen> {
                                 icon: Icon(Icons.cancel, size: 80, color: Colors.red),
                                 onPressed: () {
                                   _swiperController.swipeLeft();
+                                  addToFavorites(cats[_currentIndex].id);
                                 },
                               ),
                               IconButton(
                                 icon: Icon(Icons.check_circle, size: 80, color: Colors.green),
                                 onPressed: () {
                                   _swiperController.swipeRight();
+                                  addToFavorites(cats[_currentIndex].id);
                                 },
                               ),
                             ],
