@@ -80,9 +80,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         } else if (snapshot.hasData) {
           final List<Map<String, dynamic>> catDataList = snapshot.data as List<Map<String, dynamic>>;
           return GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 1.0,
+              childAspectRatio: 1.0, 
             ),
             itemCount: catDataList.length,
             itemBuilder: (context, index) {
@@ -121,38 +121,56 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 class CatItem extends StatelessWidget {
   final Map<String, dynamic> catData;
 
-  const CatItem({required this.catData});
+  const CatItem({required this.catData}); 
 
   @override
   Widget build(BuildContext context) {
     final String catImageUrl = catData['url'] as String;
+    final String catId = catData['id'] as String;
 
     return Card(
       child: InkWell(
         onTap: () {
-          _showCatImageDialog(context, catImageUrl);
+          _showCatImageDialog(context, catImageUrl, catId);
         },
         child: Image.network(catImageUrl, fit: BoxFit.cover),
       ),
     );
   }
 
-  void _showCatImageDialog(BuildContext context, String catImageUrl) {
+  void _showCatImageDialog(BuildContext context, String catImageUrl, String catId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Image.network(catImageUrl),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
-          ],
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.network(catImageUrl),
+              ElevatedButton(
+                onPressed: () {
+                  _removeFromFavorites(catId);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Unfavorite'),
+              ),
+            ],
+          ),
         );
       },
     );
+  }
+
+  void _removeFromFavorites(String catId) async {
+    final User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userId = user.uid;
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('favorites')
+          .doc(catId)
+          .delete();
+    }
   }
 }
